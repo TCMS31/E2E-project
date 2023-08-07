@@ -11,8 +11,9 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.db import connection
-from django.http import JsonResponse
+from django.http import HttpResponseServerError, JsonResponse
 from django.shortcuts import redirect, render
+from django.template import loader
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (
@@ -195,4 +196,6 @@ def custom_404_view(request, exception):
 
 
 def custom_500_view(request):
-    return render(request, '500.html', status=500)
+    # Rendered without the request so no context processor touches the session
+    # or user tables: if the database is what failed, the error page still works.
+    return HttpResponseServerError(loader.render_to_string('500.html'))

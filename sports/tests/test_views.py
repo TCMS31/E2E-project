@@ -138,3 +138,24 @@ def test_create_team_reports_a_case_insensitive_duplicate(auth_client, team):
     assert 'A team with this city and mascot already exists.' in response.content.decode()
     assert Team.objects.count() == 1
 
+
+def test_500_page_renders_when_the_user_lookup_fails(rf):
+    """The 500 page must not depend on the database that may have just failed.
+
+    It used to render with the request, so the auth context processor loaded
+    ``request.user`` and a dead database turned the error page into a second
+    crash.
+    """
+    from django.db import DatabaseError
+    from django.utils.functional import SimpleLazyObject
+
+    from sports.views import custom_500_view
+
+    def broken_user():
+        raise DatabaseError('database is down')
+
+    request = rf.get('/')
+    request.user = SimpleLazyObject(broken_user)
+    response = custom_500_view(request)
+    assert response.status_code == 500
+    assert b'Something went wrong' in response.content
