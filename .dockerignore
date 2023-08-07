@@ -17,5 +17,5 @@ scripts
 **/.DS_Store
 requirements-dev.txt
 pytest.ini
-conftest.py
 sports/tests
+sportsapp/settings_test.py

@@ -52,7 +52,7 @@ pytest
 ruff check .
 ```
 
-The tests also need `DJANGO_SECRET_KEY` set. They cover models, auth, views, settings and query counts.
+`pytest` runs against `sportsapp/settings_test.py`, which supplies a throwaway key, so nothing needs exporting first. The tests cover models, auth, views, settings and query counts.
 
 ## Code layout notes
 
