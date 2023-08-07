@@ -57,3 +57,40 @@ def test_logout_via_post_ends_the_session(auth_client):
     assert response.status_code == 302
     assert response.url == reverse('login')
     assert auth_client.get(reverse('team_list')).status_code == 302
+
+
+def test_signup_rejects_mismatched_passwords(client, db):
+    response = client.post(
+        reverse('signup'),
+        {
+            'username': 'newcoach',
+            'password1': 'a-sufficiently-long-password',
+            'password2': 'a-different-long-password',
+        },
+    )
+    assert response.status_code == 200
+    assert response.context['form'].errors['password2']
+    assert not User.objects.filter(username='newcoach').exists()
+
+
+def test_login_rejects_a_wrong_password(client, user):
+    response = client.post(reverse('login'), {'username': user.username, 'password': 'nope'})
+    assert response.status_code == 200
+    assert response.context['form'].non_field_errors()
+
+
+def test_login_honours_a_safe_next_url(client, user, password, team):
+    target = reverse('team_detail', args=(team.pk,))
+    response = client.post(
+        f"{reverse('login')}?next={target}",
+        {'username': user.username, 'password': password},
+    )
+    assert response.url == target
+
+
+def test_login_ignores_an_off_site_next_url(client, user, password):
+    response = client.post(
+        f"{reverse('login')}?next=https://evil.example/",
+        {'username': user.username, 'password': password},
+    )
+    assert response.url == reverse('team_list')

@@ -81,3 +81,7 @@ def test_pagination_pages_do_not_overlap(auth_client, populated_roster):
     second = {p.pk for p in auth_client.get(reverse('player_list'), {'page': 2}).context['players']}
     assert not first & second
     assert len(first | second) == 40
+
+
+def test_out_of_range_page_is_a_404(auth_client, populated_roster):
+    assert auth_client.get(reverse('player_list'), {'page': 99}).status_code == 404
