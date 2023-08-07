@@ -39,3 +39,8 @@ def test_deleting_a_team_keeps_its_players(team, player):
     team.delete()
     player.refresh_from_db()
     assert player.teams.count() == 0
+
+
+def test_team_uniqueness_ignores_case(team):
+    with pytest.raises(IntegrityError):
+        Team.objects.create(city='boston', mascot='ROCKETS')

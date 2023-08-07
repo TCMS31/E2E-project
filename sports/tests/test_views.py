@@ -130,3 +130,11 @@ def test_healthz_is_public_and_reports_ok(client, db):
     response = client.get(reverse('healthz'))
     assert response.status_code == 200
     assert response.json() == {'status': 'ok', 'database': 'ok'}
+
+
+def test_create_team_reports_a_case_insensitive_duplicate(auth_client, team):
+    response = auth_client.post(reverse('team_create'), {'city': 'boston', 'mascot': 'rockets'})
+    assert response.status_code == 200
+    assert 'A team with this city and mascot already exists.' in response.content.decode()
+    assert Team.objects.count() == 1
+

@@ -7,10 +7,15 @@ selectors layer read a team's roster as ``team.players``.
 """
 
 from django.db import models
+from django.db.models.functions import Lower
 
 
 class Team(models.Model):
-    """A club, identified by the city it plays in and its mascot."""
+    """A club, identified by the city it plays in and its mascot.
+
+    Uniqueness ignores case: "Boston Rockets" and "boston rockets" are the same
+    club, and letting both in splits one roster across two rows.
+    """
 
     city = models.CharField(max_length=100)
     mascot = models.CharField(max_length=100)
@@ -18,7 +23,12 @@ class Team(models.Model):
     class Meta:
         ordering = ('city', 'mascot')
         constraints = (
-            models.UniqueConstraint(fields=('city', 'mascot'), name='unique_team_city_mascot'),
+            models.UniqueConstraint(
+                Lower('city'),
+                Lower('mascot'),
+                name='unique_team_city_mascot_ci',
+                violation_error_message='A team with this city and mascot already exists.',
+            ),
         )
 
     def __str__(self):
