@@ -1,0 +1,25 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "project_venv", "sports/migrations", "staticfiles"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # import ordering
+    "B",    # bugbear
+    "DJ",   # Django-specific rules
+    "UP",   # pyupgrade
+    "C4",   # comprehensions
+]
+ignore = [
+    "B008",  # Django settings idioms call functions at module level
+]
+
+[tool.ruff.lint.per-file-ignores]
+"sports/tests/*" = ["E501"]
+
+[tool.ruff.format]
+quote-style = "single"
