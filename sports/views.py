@@ -10,7 +10,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as DjangoLoginView
-from django.db import connection
+from django.db import DatabaseError, connection
 from django.http import HttpResponseServerError, JsonResponse
 from django.shortcuts import redirect, render
 from django.template import loader
@@ -186,7 +186,7 @@ def healthz(request):
     """
     try:
         connection.ensure_connection()
-    except Exception:  # noqa: BLE001 - any driver error means "not ready"
+    except DatabaseError:
         return JsonResponse({'status': 'error', 'database': 'unavailable'}, status=503)
     return JsonResponse({'status': 'ok', 'database': 'ok'})
 

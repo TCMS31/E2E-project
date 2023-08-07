@@ -16,7 +16,7 @@ class BootstrapModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             widget = field.widget
-            if isinstance(widget, (forms.Select, forms.SelectMultiple)):
+            if isinstance(widget, forms.Select):
                 widget.attrs.setdefault('class', 'form-select')
             elif isinstance(widget, forms.CheckboxInput):
                 widget.attrs.setdefault('class', 'form-check-input')

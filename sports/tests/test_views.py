@@ -159,3 +159,22 @@ def test_500_page_renders_when_the_user_lookup_fails(rf):
     response = custom_500_view(request)
     assert response.status_code == 500
     assert b'Something went wrong' in response.content
+
+
+def test_healthz_reports_503_when_the_database_is_unreachable(client, db, monkeypatch):
+    from django.db import OperationalError, connection
+
+    def refuse():
+        raise OperationalError('unable to open database file')
+
+    # Scoped so the test database teardown gets the real method back.
+    with monkeypatch.context() as patch:
+        patch.setattr(connection, 'ensure_connection', refuse)
+        response = client.get(reverse('healthz'))
+    assert response.status_code == 503
+    assert response.json() == {'status': 'error', 'database': 'unavailable'}
+
+
+def test_player_form_styles_the_team_picker_as_a_select(auth_client):
+    response = auth_client.get(reverse('player_create'))
+    assert b'class="form-select"' in response.content
