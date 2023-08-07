@@ -16,17 +16,18 @@ TEAMS = [
     ('Portland', 'Anchors'),
 ]
 
+# Invented names, so screenshots and demos never show a real person on a roster.
 PLAYERS = [
-    ('Ada', 'Lovelace', ['Boston Rockets']),
-    ('Grace', 'Hopper', ['Boston Rockets', 'Denver Summits']),
-    ('Alan', 'Turing', ['Chicago Wolves']),
-    ('Katherine', 'Johnson', ['Austin Comets', 'Portland Anchors']),
-    ('Mary', 'Jackson', ['Austin Comets']),
-    ('Dorothy', 'Vaughan', ['Denver Summits']),
-    ('Barbara', 'Liskov', ['Portland Anchors', 'Chicago Wolves']),
-    ('Radia', 'Perlman', ['Boston Rockets']),
-    ('Margaret', 'Hamilton', ['Chicago Wolves']),
-    ('Shafi', 'Goldwasser', []),
+    ('Marisol', 'Okafor', ['Boston Rockets']),
+    ('Theo', 'Lindqvist', ['Boston Rockets', 'Denver Summits']),
+    ('Jalen', 'Brightwater', ['Chicago Wolves']),
+    ('Priya', 'Castell', ['Austin Comets', 'Portland Anchors']),
+    ('Rafael', 'Duquesne', ['Austin Comets']),
+    ('Nell', 'Ashby', ['Denver Summits']),
+    ('Tomasz', 'Wren', ['Portland Anchors', 'Chicago Wolves']),
+    ('Keiko', 'Halloran', ['Boston Rockets']),
+    ('Bram', 'Vossberg', ['Chicago Wolves']),
+    ('Ines', 'Calder', []),
 ]
 
 
