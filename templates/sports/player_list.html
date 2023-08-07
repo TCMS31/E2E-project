@@ -15,30 +15,30 @@
     {% if players %}
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
+          <caption class="visually-hidden">Players, sorted by last name, with their teams</caption>
           <thead>
             <tr>
-              <th scope="col">Last name</th>
-              <th scope="col">First name</th>
+              <th scope="col">Player</th>
               <th scope="col">Teams</th>
-              <th scope="col" class="text-end">Actions</th>
+              <th scope="col" class="text-end d-none d-sm-table-cell">Actions</th>
             </tr>
           </thead>
           <tbody>
             {% for player in players %}
               <tr>
-                <th scope="row" class="fw-semibold">{{ player.last_name }}</th>
-                <td>{{ player.first_name }}</td>
+                <th scope="row">
+                  <a class="row-link" href="{% url 'player_detail' player.pk %}">{{ player.last_name }}, {{ player.first_name }}</a>
+                </th>
                 <td>
                   {% for team in player.teams.all %}
-                    <span class="badge text-bg-light">{{ team.city }} {{ team.mascot }}</span>
+                    <span class="team-chip">{{ team.city }} {{ team.mascot }}</span>
                   {% empty %}
                     <span class="text-muted">Unassigned</span>
                   {% endfor %}
                 </td>
-                <td class="text-end">
-                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'player_detail' player.pk %}">Details</a>
-                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'player_update' player.pk %}">Edit</a>
-                  <a class="btn btn-sm btn-outline-danger" href="{% url 'player_delete' player.pk %}">Delete</a>
+                <td class="text-end text-nowrap d-none d-sm-table-cell">
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'player_update' player.pk %}" aria-label="Edit {{ player.full_name }}">Edit</a>
+                  <a class="btn btn-sm btn-outline-danger" href="{% url 'player_delete' player.pk %}" aria-label="Delete {{ player.full_name }}">Delete</a>
                 </td>
               </tr>
             {% endfor %}
@@ -47,7 +47,7 @@
       </div>
     {% else %}
       <div class="empty-state">
-        <p class="mb-3">No players yet.</p>
+        <p class="mb-3">No players yet. Add one and pick the teams they play for.</p>
         <a class="btn btn-primary" href="{% url 'player_create' %}">Add the first player</a>
       </div>
     {% endif %}

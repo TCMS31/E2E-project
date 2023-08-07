@@ -1,32 +1,50 @@
 {% extends 'base.html' %}
 
-{% block title %}Sports Roster{% endblock %}
+{% block title %}Overview{% endblock %}
 
 {% block content %}
-  <div class="py-4">
-    <h1 class="mb-2">Teams and players</h1>
-    <p class="text-muted mb-4">Manage club rosters and the players that belong to them.</p>
-    <div class="row g-3">
-      <div class="col-md-6">
-        <div class="card h-100">
-          <div class="card-body">
-            <h2 class="h5 card-title">Teams</h2>
-            <p class="card-text text-muted">Every club, with the size of its roster.</p>
-            <a class="btn btn-primary" href="{% url 'team_list' %}">View teams</a>
-            <a class="btn btn-outline-secondary" href="{% url 'team_create' %}">Add a team</a>
-          </div>
+  <div class="page-header">
+    <div>
+      <h1>Teams and players</h1>
+      <p class="text-muted mb-0">Manage club rosters and the players that belong to them.</p>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-sm-6 col-lg-4">
+      <section class="card stat-card h-100" aria-labelledby="stat-teams">
+        <div class="card-body">
+          <h2 class="h5 text-uppercase text-muted mb-2" id="stat-teams">Teams</h2>
+          <p class="stat mb-3">{{ summary.team_count }}</p>
+          <a class="btn btn-primary btn-sm" href="{% url 'team_list' %}">View teams</a>
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'team_create' %}">Add a team</a>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card h-100">
-          <div class="card-body">
-            <h2 class="h5 card-title">Players</h2>
-            <p class="card-text text-muted">Every player and the teams they play for.</p>
-            <a class="btn btn-primary" href="{% url 'player_list' %}">View players</a>
-            <a class="btn btn-outline-secondary" href="{% url 'player_create' %}">Add a player</a>
-          </div>
+      </section>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <section class="card stat-card h-100" aria-labelledby="stat-players">
+        <div class="card-body">
+          <h2 class="h5 text-uppercase text-muted mb-2" id="stat-players">Players</h2>
+          <p class="stat mb-3">{{ summary.player_count }}</p>
+          <a class="btn btn-primary btn-sm" href="{% url 'player_list' %}">View players</a>
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'player_create' %}">Add a player</a>
         </div>
-      </div>
+      </section>
+    </div>
+    <div class="col-lg-4">
+      <section class="card h-100" aria-labelledby="stat-unassigned">
+        <div class="card-body">
+          <h2 class="h5 text-uppercase text-muted mb-2" id="stat-unassigned">Without a team</h2>
+          <p class="stat mb-2">{{ summary.unassigned_count }}</p>
+          <p class="text-muted mb-0">
+            {% if summary.unassigned_count %}
+              Player{{ summary.unassigned_count|pluralize:" is,s are" }} not on any roster yet. Open a player and tick their teams.
+            {% else %}
+              Every player is on at least one roster.
+            {% endif %}
+          </p>
+        </div>
+      </section>
     </div>
   </div>
 {% endblock %}

@@ -15,24 +15,24 @@
     {% if teams %}
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
+          <caption class="visually-hidden">Teams with the number of players on each roster</caption>
           <thead>
             <tr>
-              <th scope="col">City</th>
-              <th scope="col">Mascot</th>
-              <th scope="col">Players</th>
-              <th scope="col" class="text-end">Actions</th>
+              <th scope="col">Team</th>
+              <th scope="col" class="text-center">Players</th>
+              <th scope="col" class="text-end d-none d-sm-table-cell">Actions</th>
             </tr>
           </thead>
           <tbody>
             {% for team in teams %}
               <tr>
-                <th scope="row" class="fw-semibold">{{ team.city }}</th>
-                <td>{{ team.mascot }}</td>
-                <td><span class="badge text-bg-light">{{ team.player_count }}</span></td>
-                <td class="text-end">
-                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'team_detail' team.pk %}">Details</a>
-                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'team_update' team.pk %}">Edit</a>
-                  <a class="btn btn-sm btn-outline-danger" href="{% url 'team_delete' team.pk %}">Delete</a>
+                <th scope="row">
+                  <a class="row-link" href="{% url 'team_detail' team.pk %}">{{ team.city }} {{ team.mascot }}</a>
+                </th>
+                <td class="text-center"><span class="count-pill">{{ team.player_count }}</span></td>
+                <td class="text-end text-nowrap d-none d-sm-table-cell">
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'team_update' team.pk %}" aria-label="Edit {{ team }}">Edit</a>
+                  <a class="btn btn-sm btn-outline-danger" href="{% url 'team_delete' team.pk %}" aria-label="Delete {{ team }}">Delete</a>
                 </td>
               </tr>
             {% endfor %}
@@ -41,7 +41,7 @@
       </div>
     {% else %}
       <div class="empty-state">
-        <p class="mb-3">No teams yet.</p>
+        <p class="mb-3">No teams yet. Start with the club you manage.</p>
         <a class="btn btn-primary" href="{% url 'team_create' %}">Add the first team</a>
       </div>
     {% endif %}

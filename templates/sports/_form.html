@@ -4,25 +4,40 @@
 
 {% block content %}
   <div class="page-header"><h1>{{ heading }}</h1></div>
-  <div class="card">
-    <div class="card-body">
+  <div class="card" style="max-width: 46rem;">
+    <div class="card-body p-4">
       <form method="post" novalidate>
         {% csrf_token %}
         {% if form.non_field_errors %}
-          <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+          <div class="alert alert-danger" role="alert">
+            {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+          </div>
         {% endif %}
         {% for field in form %}
-          <div class="mb-3">
-            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-            {% for error in field.errors %}
-              <div class="invalid-feedback d-block">{{ error }}</div>
-            {% endfor %}
-          </div>
+          {% if field.widget_type == 'checkboxselectmultiple' %}
+            <fieldset class="mb-4 team-picker">
+              <legend class="form-label fs-6 fw-semibold mb-2">{{ field.label }}</legend>
+              {% if field.help_text %}<p class="form-text mt-0 mb-2" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
+              {% if field.field.queryset.exists %}
+                {{ field }}
+              {% else %}
+                <p class="text-muted mb-0">No teams yet. <a href="{% url 'team_create' %}">Add a team</a> first, or save the player unassigned.</p>
+              {% endif %}
+              {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </fieldset>
+          {% else %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<div class="form-text" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}
+              {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            </div>
+          {% endif %}
         {% endfor %}
-        <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
-        <a class="btn btn-link" href="{{ cancel_url }}">Cancel</a>
+        <div class="d-flex flex-wrap gap-2 align-items-center mt-4">
+          <button type="submit" class="btn btn-primary px-4" data-busy-label="Saving…">{{ submit_label }}</button>
+          <a class="btn btn-link" href="{{ cancel_url }}">Cancel</a>
+        </div>
       </form>
     </div>
   </div>

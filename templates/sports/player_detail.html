@@ -3,7 +3,7 @@
 {% block title %}{{ player.full_name }}{% endblock %}
 
 {% block content %}
-  <nav aria-label="breadcrumb">
+  <nav aria-label="Breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'player_list' %}">Players</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ player.full_name }}</li>
@@ -12,27 +12,27 @@
 
   <div class="page-header">
     <h1>{{ player.full_name }}</h1>
-    <div>
-      <a class="btn btn-outline-secondary" href="{% url 'player_update' player.pk %}">Edit</a>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="{% url 'player_update' player.pk %}">Edit player</a>
       <a class="btn btn-outline-danger" href="{% url 'player_delete' player.pk %}">Delete</a>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-header bg-white fw-semibold">Teams</div>
+  <section class="card" aria-labelledby="teams-heading">
+    <div class="card-header"><h2 class="h6 m-0 fw-semibold" id="teams-heading">Teams</h2></div>
     {% if player.teams.all %}
       <ul class="list-group list-group-flush">
         {% for team in player.teams.all %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span>{{ team.city }} {{ team.mascot }}</span>
-            <a class="btn btn-sm btn-outline-secondary" href="{% url 'team_detail' team.pk %}">Details</a>
+          <li class="list-group-item">
+            <a class="row-link text-decoration-none fw-semibold" href="{% url 'team_detail' team.pk %}">{{ team.city }} {{ team.mascot }}</a>
           </li>
         {% endfor %}
       </ul>
     {% else %}
       <div class="empty-state">
-        <p class="mb-0">This player is not on any team yet.</p>
+        <p class="mb-3">This player is not on any team yet.</p>
+        <a class="btn btn-primary" href="{% url 'player_update' player.pk %}">Pick their teams</a>
       </div>
     {% endif %}
-  </div>
+  </section>
 {% endblock %}

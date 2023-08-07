@@ -16,6 +16,10 @@ class BootstrapModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             widget = field.widget
+            if isinstance(widget, forms.CheckboxSelectMultiple):
+                # Django puts a widget-level class on the wrapping <div>, not the
+                # inputs, so the checkbox list is styled from the template CSS.
+                continue
             if isinstance(widget, forms.Select):
                 widget.attrs.setdefault('class', 'form-select')
             elif isinstance(widget, forms.CheckboxInput):
@@ -40,7 +44,10 @@ class PlayerForm(BootstrapModelForm):
     class Meta:
         model = Player
         fields = ('first_name', 'last_name', 'teams')
-        help_texts = {'teams': 'Hold Cmd/Ctrl to select more than one team.'}
+        # Checkboxes instead of a multi-select: no Cmd/Ctrl-click to learn, and
+        # they work with a thumb on a phone.
+        widgets = {'teams': forms.CheckboxSelectMultiple}
+        help_texts = {'teams': 'Tick every team this player is on. Leave all blank for none.'}
 
     def clean_first_name(self):
         return self.cleaned_data['first_name'].strip()

@@ -6,7 +6,7 @@ and any future filtering live in one testable place instead of being spread
 across a dozen class-based views.
 """
 
-from django.db.models import Count, Prefetch
+from django.db.models import Count, Prefetch, Q
 
 from .models import Player, Team
 
@@ -40,3 +40,15 @@ def player_list():
 def player_detail_queryset():
     """Players with team memberships prefetched, for the detail page."""
     return Player.objects.prefetch_related('teams')
+
+
+def roster_summary():
+    """Headline numbers for the overview page, in two queries.
+
+    The team join repeats a player once per membership, hence ``distinct``.
+    """
+    players = Player.objects.aggregate(
+        player_count=Count('pk', distinct=True),
+        unassigned_count=Count('pk', filter=Q(teams__isnull=True), distinct=True),
+    )
+    return {'team_count': Team.objects.count(), **players}

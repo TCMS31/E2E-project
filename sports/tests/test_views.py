@@ -175,6 +175,50 @@ def test_healthz_reports_503_when_the_database_is_unreachable(client, db, monkey
     assert response.json() == {'status': 'error', 'database': 'unavailable'}
 
 
-def test_player_form_styles_the_team_picker_as_a_select(auth_client):
+def test_player_form_offers_teams_as_checkboxes(auth_client, team):
     response = auth_client.get(reverse('player_create'))
-    assert b'class="form-select"' in response.content
+    body = response.content.decode()
+    assert '<legend' in body
+    assert 'type="checkbox"' in body
+    assert '<div id="id_teams">' in body
+    assert 'Boston Rockets' in body
+
+
+def test_player_form_explains_an_empty_team_list(auth_client, db):
+    response = auth_client.get(reverse('player_create'))
+    assert b'No teams yet.' in response.content
+
+
+def test_home_page_shows_roster_totals(auth_client, team, player):
+    Player.objects.create(first_name='Free', last_name='Agent')
+    response = auth_client.get(reverse('home'))
+    assert response.context['summary'] == {
+        'team_count': 1,
+        'player_count': 2,
+        'unassigned_count': 1,
+    }
+
+
+def test_roster_summary_does_not_double_count_multi_team_players(db, team, player):
+    from sports.selectors import roster_summary
+
+    player.teams.add(Team.objects.create(city='Austin', mascot='Comets'))
+    assert roster_summary() == {'team_count': 2, 'player_count': 1, 'unassigned_count': 0}
+
+
+def test_saving_a_team_flashes_a_confirmation(auth_client):
+    response = auth_client.post(
+        reverse('team_create'), {'city': 'Austin', 'mascot': 'Comets'}, follow=True
+    )
+    assert 'Added Austin Comets.' in response.content.decode()
+
+
+def test_deleting_a_player_flashes_their_name(auth_client, player):
+    response = auth_client.post(reverse('player_delete', args=(player.pk,)), follow=True)
+    assert 'Deleted Ada Lovelace.' in response.content.decode()
+
+
+def test_current_section_is_marked_in_the_nav(auth_client, team):
+    body = auth_client.get(reverse('team_detail', args=(team.pk,))).content.decode()
+    assert 'href="/team/" aria-current="page"' in body
+    assert 'href="/player/" aria-current="page"' not in body

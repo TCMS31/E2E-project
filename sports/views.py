@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as DjangoLoginView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db import DatabaseError, connection
 from django.http import HttpResponseServerError, JsonResponse
 from django.shortcuts import redirect, render
@@ -44,7 +45,7 @@ class HomeView(LoginRequiredMixin, View):
     """Landing page with links into the two rosters."""
 
     def get(self, request):
-        return render(request, 'index.html')
+        return render(request, 'index.html', {'summary': selectors.roster_summary()})
 
 
 class TeamListView(PaginatedListView):
@@ -55,10 +56,11 @@ class TeamListView(PaginatedListView):
         return selectors.team_list()
 
 
-class TeamCreateView(LoginRequiredMixin, CreateView):
+class TeamCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = TeamForm
     template_name = 'team_form.html'
     success_url = reverse_lazy('team_list')
+    success_message = 'Added %(city)s %(mascot)s.'
     extra_context = {
         'heading': 'Add a team',
         'submit_label': 'Create team',
@@ -66,10 +68,11 @@ class TeamCreateView(LoginRequiredMixin, CreateView):
     }
 
 
-class TeamUpdateView(LoginRequiredMixin, UpdateView):
+class TeamUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = TeamForm
     template_name = 'team_form.html'
     success_url = reverse_lazy('team_list')
+    success_message = 'Saved %(city)s %(mascot)s.'
     extra_context = {
         'heading': 'Edit team',
         'submit_label': 'Save changes',
@@ -80,10 +83,13 @@ class TeamUpdateView(LoginRequiredMixin, UpdateView):
         return selectors.team_detail_queryset()
 
 
-class TeamDeleteView(LoginRequiredMixin, DeleteView):
+class TeamDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'team_confirm_delete.html'
     success_url = reverse_lazy('team_list')
     context_object_name = 'team'
+
+    def get_success_message(self, cleaned_data):
+        return f'Deleted {self.object}.'
 
     def get_queryset(self):
         return selectors.team_detail_queryset()
@@ -105,10 +111,11 @@ class PlayerListView(PaginatedListView):
         return selectors.player_list()
 
 
-class PlayerCreateView(LoginRequiredMixin, CreateView):
+class PlayerCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = PlayerForm
     template_name = 'player_form.html'
     success_url = reverse_lazy('player_list')
+    success_message = 'Added %(first_name)s %(last_name)s.'
     extra_context = {
         'heading': 'Add a player',
         'submit_label': 'Create player',
@@ -116,10 +123,11 @@ class PlayerCreateView(LoginRequiredMixin, CreateView):
     }
 
 
-class PlayerUpdateView(LoginRequiredMixin, UpdateView):
+class PlayerUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = PlayerForm
     template_name = 'player_form.html'
     success_url = reverse_lazy('player_list')
+    success_message = 'Saved %(first_name)s %(last_name)s.'
     extra_context = {
         'heading': 'Edit player',
         'submit_label': 'Save changes',
@@ -130,10 +138,13 @@ class PlayerUpdateView(LoginRequiredMixin, UpdateView):
         return selectors.player_detail_queryset()
 
 
-class PlayerDeleteView(LoginRequiredMixin, DeleteView):
+class PlayerDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'player_confirm_delete.html'
     success_url = reverse_lazy('player_list')
     context_object_name = 'player'
+
+    def get_success_message(self, cleaned_data):
+        return f'Deleted {self.object}.'
 
     def get_queryset(self):
         return selectors.player_detail_queryset()
@@ -147,9 +158,10 @@ class PlayerDetailView(LoginRequiredMixin, DetailView):
         return selectors.player_detail_queryset()
 
 
-class SignUpView(CreateView):
+class SignUpView(SuccessMessageMixin, CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
+    success_message = 'Account created for %(username)s. Log in to continue.'
     template_name = 'signup.html'
 
 
