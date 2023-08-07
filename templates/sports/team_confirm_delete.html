@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ team }}{% endblock %}
+
+{% block content %}
+  <div class="card auth-card">
+    <div class="card-body">
+      <h1 class="h4">Delete team</h1>
+      <p class="text-muted">Delete <strong>{{ team }}</strong>? Players on this roster are kept;
+        only the team and its roster links are removed.</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'team_detail' team.pk %}" class="btn btn-outline-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+{% endblock %}

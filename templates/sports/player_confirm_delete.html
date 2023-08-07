@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ player.full_name }}{% endblock %}
+
+{% block content %}
+  <div class="card auth-card">
+    <div class="card-body">
+      <h1 class="h4">Delete player</h1>
+      <p class="text-muted">Delete <strong>{{ player.full_name }}</strong>?
+        This removes the player from every team roster.</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'player_detail' player.pk %}" class="btn btn-outline-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+{% endblock %}

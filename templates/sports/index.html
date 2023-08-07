@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Sports Roster{% endblock %}
+
+{% block content %}
+  <div class="py-4">
+    <h1 class="mb-2">Teams and players</h1>
+    <p class="text-muted mb-4">Manage club rosters and the players that belong to them.</p>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="h5 card-title">Teams</h2>
+            <p class="card-text text-muted">Every club, with the size of its roster.</p>
+            <a class="btn btn-primary" href="{% url 'team_list' %}">View teams</a>
+            <a class="btn btn-outline-secondary" href="{% url 'team_create' %}">Add a team</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="h5 card-title">Players</h2>
+            <p class="card-text text-muted">Every player and the teams they play for.</p>
+            <a class="btn btn-primary" href="{% url 'player_list' %}">View players</a>
+            <a class="btn btn-outline-secondary" href="{% url 'player_create' %}">Add a player</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

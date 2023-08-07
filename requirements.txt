@@ -1,0 +1,7 @@
+# Runtime dependencies. Pinned to the 4.2 LTS line.
+Django==4.2.30
+asgiref==3.6.0
+sqlparse==0.4.4
+
+# Production WSGI server (the container entrypoint). Not needed for `runserver`.
+gunicorn==21.2.0
