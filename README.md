@@ -11,7 +11,7 @@ What you can do:
 - Sign up, log in and log out
 - Browse paginated team and player lists
 
-It uses Django 4.2 with class-based views, server-rendered Bootstrap 5 templates and SQLite. Gunicorn serves it in the container.
+It uses Django 5.2 LTS on Python 3.12 with class-based views, server-rendered Bootstrap 5 templates and SQLite. Gunicorn serves it in the container.
 
 ## Getting started
 

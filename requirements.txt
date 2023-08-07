@@ -1,7 +1,7 @@
-# Runtime dependencies. Pinned to the 4.2 LTS line.
-Django==4.2.30
-asgiref==3.6.0
-sqlparse==0.4.4
+# Runtime dependencies. Django is pinned to the 5.2 LTS line (supported to April 2028).
+Django==5.2.19
+asgiref==3.13.0
+sqlparse==0.6.1
 
 # Production WSGI server (the container entrypoint). Not needed for `runserver`.
-gunicorn==21.2.0
+gunicorn==26.2.0

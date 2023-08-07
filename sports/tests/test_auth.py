@@ -82,7 +82,7 @@ def test_login_rejects_a_wrong_password(client, user):
 def test_login_honours_a_safe_next_url(client, user, password, team):
     target = reverse('team_detail', args=(team.pk,))
     response = client.post(
-        f"{reverse('login')}?next={target}",
+        f'{reverse("login")}?next={target}',
         {'username': user.username, 'password': password},
     )
     assert response.url == target
@@ -90,7 +90,7 @@ def test_login_honours_a_safe_next_url(client, user, password, team):
 
 def test_login_ignores_an_off_site_next_url(client, user, password):
     response = client.post(
-        f"{reverse('login')}?next=https://evil.example/",
+        f'{reverse("login")}?next=https://evil.example/',
         {'username': user.username, 'password': password},
     )
     assert response.url == reverse('team_list')

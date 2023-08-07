@@ -43,4 +43,6 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
     CMD curl -fsS http://localhost:8000/healthz/ || exit 1
 
 # Migrations run at start so a fresh volume is usable; gunicorn serves the app.
-CMD ["sh", "-c", "python manage.py migrate --noinput && exec gunicorn sportsapp.wsgi:application --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-3} --access-logfile -"]
+# The control socket is off: nothing uses it, and the app user cannot write one
+# under its home directory.
+CMD ["sh", "-c", "python manage.py migrate --noinput && exec gunicorn sportsapp.wsgi:application --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-3} --no-control-socket --access-logfile -"]
