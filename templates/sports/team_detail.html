@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ team }}{% endblock %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'team_list' %}">Teams</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ team }}</li>
+    </ol>
+  </nav>
+
+  <div class="page-header">
+    <h1>{{ team.city }} {{ team.mascot }}</h1>
+    <div>
+      <a class="btn btn-outline-secondary" href="{% url 'team_update' team.pk %}">Edit</a>
+      <a class="btn btn-outline-danger" href="{% url 'team_delete' team.pk %}">Delete</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-white fw-semibold">Roster</div>
+    {% if team.players.all %}
+      <ul class="list-group list-group-flush">
+        {% for player in team.players.all %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ player.full_name }}</span>
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'player_detail' player.pk %}">Details</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state">
+        <p class="mb-3">No players on this roster yet.</p>
+        <a class="btn btn-primary" href="{% url 'player_create' %}">Add a player</a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
