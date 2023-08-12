@@ -1,0 +1,28 @@
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+    image: sportsapp:local
+    ports:
+      - "${WEB_PORT:-8500}:8000"
+    environment:
+      # Required in every environment; there is no committed fallback.
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?set DJANGO_SECRET_KEY before running}
+      DJANGO_DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+      DJANGO_CSRF_TRUSTED_ORIGINS: "http://localhost:${WEB_PORT:-8500}"
+      DJANGO_LOG_LEVEL: INFO
+      SPORTS_PAGE_SIZE: "25"
+    volumes:
+      - sqlite-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/healthz/"]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:
