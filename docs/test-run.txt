@@ -1,0 +1,23 @@
+$ python -m pytest
+............................................                             [100%]
+44 passed in 2.10s
+
+$ ruff check .
+All checks passed!
+
+$ DJANGO_SECURE_SSL=1 DJANGO_SECRET_KEY=... python manage.py check --deploy
+System check identified no issues (0 silenced).
+
+$ python manage.py makemigrations --check --dry-run
+No changes detected
+
+# Live smoke test against a local runserver (all routes, logged in as the seeded demo user):
+/healthz/   -> 200   {"status": "ok", "database": "ok"}
+/login/     -> 200
+/login/ POST-> 302 http://127.0.0.1:8501/team/
+/           -> 200
+/team/      -> 200
+/team/2/    -> 200
+/player/    -> 200
+/player/1/  -> 200   <h1>Ada Lovelace</h1>   (was HTTP 500, TemplateDoesNotExist, before this pass)
+/player/new/-> 200

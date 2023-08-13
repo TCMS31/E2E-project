@@ -1,0 +1,8 @@
+$ DJANGO_DEBUG=1 python scripts/benchmark_roster.py
+# Django 4.2.30, Python 3.12.6, SQLite, macOS arm64
+
+  rows |  naive q  naive ms |  selector q  selector ms
+------------------------------------------------------------
+    50 |       51      22.7 |           2          4.1
+   200 |      201      45.1 |           2         14.2
+  1000 |     1001     202.9 |           2         75.8
